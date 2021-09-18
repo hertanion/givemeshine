@@ -1,0 +1,31 @@
+{
+  "name": "shine",
+  "version": "1.0.0",
+  "description": "vk user bot created by whyrinki",
+  "main": "build/shine.js",
+  "scripts": {
+    "start": "node build/shine.js",
+    "build": "rollup -c rollup.config.js",
+    "st": "npm run build && npm run start"
+  },
+  "devDependencies": {
+    "@rollup/plugin-json": "^4.1.0",
+    "@types/lodash": "^4.14.172",
+    "@types/node": "^16.7.4",
+    "@types/node-fetch": "^2.5.12",
+    "chalk": "^4.1.2",
+    "consola": "^2.15.3",
+    "rollup": "^2.56.3",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "typescript": "^4.4.2"
+  },
+  "license": "GPL-3.0",
+  "private": true,
+  "dependencies": {
+    "canvas": "^2.8.0",
+    "lodash": "^4.17.21",
+    "sequelize": "^6.6.5",
+    "sqlite3": "^5.0.2",
+    "vk-io": "^4.3.2"
+  }
+}

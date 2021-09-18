@@ -1,0 +1,30 @@
+{
+    "include": [
+      "src"
+    ],
+    "compilerOptions": {
+      "lib": [
+        "es6",
+        "dom",
+        "dom.iterable"
+      ],
+      "baseUrl": "./src",
+      "paths": {
+        "@shine-database": ["database/index.ts"],
+        "@shine-commands": ["commands/index.ts"],
+        "@shine-*": ["utils/*.ts"],
+        "@model-*": ["database/models/*.ts"],
+        "@shine-project": ["../package.json"],
+        "@shine-json": ["../shine.settings.json"],
+      },
+      "outDir": "build",
+      "declaration": true,
+      "experimentalDecorators": true,
+      "resolveJsonModule": true,
+      "strict": true,
+      "esModuleInterop": true,
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "target": "ES2020"
+    }
+}
