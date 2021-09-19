@@ -2,6 +2,7 @@
 import { statSync } from 'fs';
 import { dirname } from 'path';
 import { MessageContext } from 'vk-io';
+import { shine_emoji } from '@shine-emojis';
 
 export const __projname = dirname(__dirname);
 export const isAsync = (f: any) => f[Symbol.toStringTag] === 'AsyncFunction';
@@ -137,6 +138,5 @@ export const shine_build = {
     createdAt: shine_build_raw.birthtimeMs,
     builded: shine_build_raw.mtimeMs
 };
-export const preshineemoji = '✨';
-export const preshine = `${preshineemoji} шайни`;
+export const preshine = `${shine_emoji} шайни`;
 export const itsMe = (ctx: MessageContext, me: number) => ctx.isOutbox || ctx.peerId === me;
