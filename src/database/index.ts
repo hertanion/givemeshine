@@ -1,6 +1,5 @@
 
 import { Sequelize } from 'sequelize';
-import VoiceModel from '@model-voice';
 import settings from '@shine-json';
 
 export const sequelize = new Sequelize({
