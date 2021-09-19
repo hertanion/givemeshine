@@ -1,11 +1,12 @@
 
 import { statSync } from 'fs';
 import { dirname } from 'path';
-import { MessageContext } from 'vk-io';
+import { API, AttachmentType, AttachmentTypeString, AudioAttachment, AudioMessageAttachment, DocumentAttachment, getRandomId, GiftAttachment, GraffitiAttachment, LinkAttachment, MarketAlbumAttachment, MarketAttachment, MessageContext, PhotoAttachment, PollAttachment, StickerAttachment, StoryAttachment, VideoAttachment, WallAttachment, WallReplyAttachment } from 'vk-io';
 import { shine_emoji } from '@shine-emojis';
 
 export const __projname = dirname(__dirname);
 export const isAsync = (f: any) => f[Symbol.toStringTag] === 'AsyncFunction';
+
 
 export class KotObjects {
     
@@ -73,22 +74,47 @@ export class KotObjects {
 
 };
 
-export function getAllAttachmentsIncludeRAF(ctx: any, type: any) {
-    const attachments: any[] = [];
-    
-    function seek(
-        message_context: any
-    ) {
-        // @ts-ignore
-        if(message_context.hasAttachments(type) && type !== undefined) attachments.push(...message_context.getAttachments(type));
-        if(message_context.hasReplyMessage) seek(message_context.replyMessage!);
-        // @ts-ignore
-        if(message_context.hasForwards) seek(message_context.forwards!);
-    };
-    
-    seek(ctx);
+export class ShineAttach {
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.AUDIO | 'audio'): Promise<AudioAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.AUDIO_MESSAGE | 'audio_message'): Promise<AudioMessageAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.GRAFFITI | 'graffiti'): Promise<GraffitiAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.DOCUMENT | 'doc'): Promise<DocumentAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.MARKET_ALBUM | 'market_album'): Promise<MarketAlbumAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.MARKET | 'market'): Promise<MarketAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.PHOTO | 'photo'): Promise<PhotoAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.STORY | 'story'): Promise<StoryAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.VIDEO | 'video'): Promise<VideoAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.WALL | 'wall'): Promise<WallAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.POLL | 'poll'): Promise<PollAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.GIFT | 'gift'): Promise<GiftAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.LINK | 'link'): Promise<LinkAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.STICKER | 'sticker'): Promise<StickerAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: AttachmentType.WALL_REPLY | 'wall_reply'): Promise<WallReplyAttachment[]>;
+    static async getAttachments(ctx: MessageContext, type: any): Promise<any[]> {
+        
+        const attachments: any[] = [];
 
-    return attachments;       
+        async function seek(enter: MessageContext) {
+            await enter.loadMessagePayload({ force: true });
+            if(enter.hasAttachments(type as AttachmentTypeString)) attachments.push( ... enter.getAttachments( type ) );
+            if(enter.hasReplyMessage) await seek(enter.replyMessage!);
+            if(enter.hasForwards) for (let forward of enter.forwards) await seek(forward);
+        };
+        await seek(ctx);
+        return attachments;
+        
+    };
+};
+
+export async function sendCopyWith(ctx: MessageContext, options: any = {}, api?: API) {
+    const standart: any = { }
+    if(ctx.hasReplyMessage) standart.reply_to = ctx.replyMessage!.id
+    if(ctx.hasAttachments()) standart.attachment = ctx.attachments;
+    const message_options = Object.assign(standart, {
+        peer_id: ctx.peerId, random_id: getRandomId()
+    }, options);
+    if(api) return api.messages.send(message_options);
+    ctx.send(message_options);
 };
 
 const shine_build_raw = statSync(`${__projname}/build/shine.js`)
