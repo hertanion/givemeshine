@@ -2,6 +2,12 @@
 // block of handlers and etc
 
 // @types
+interface MessageRiveContext {
+    called: string | false;  
+};
+interface onMessageCtx<T> {
+    onMessage?: (ctx: T, mrctx: MessageRiveContext) => unknown;
+};
 type AnyProps = { [x: string]: any };
 type DefaultProps = { text?: string; hasText: boolean; } & AnyProps;
 export interface RiveContext {
@@ -20,7 +26,7 @@ export interface Command<T> {
     name: string;
     desc?: string;
     aliases: Array<string>;
-    storage?: AnyProps;
+    storage?: AnyProps & onMessageCtx<T>;
     handler: (ctx: T, rive_ctx: RiveContext) => unknown;
 };
 
@@ -51,6 +57,12 @@ export class RiveHandler {
             function createCommandRegExp(prefix: string = '', aliases: Array<string> = []): RegExp {
                 return new RegExp(`^${prefix}${aliases.length > 0 ? '(' + aliases.map(e => e.split(/\s+/).join('\\s+')).join('|') + ')' : ''}(?:\\s*|\\s+(.*))$`,'is');
             };
+
+            this.commands.forEach(async(cmd: Command<T>) => {
+                cmd?.storage?.onMessage ? cmd?.storage?.onMessage(context, { 
+                    called: context.text !== undefined && createCommandRegExp(this.used_prefix, cmd.aliases).test(context.text) ? createCommandRegExp(this.used_prefix, cmd.aliases).exec(context.text)?.[1] || false : false
+                 }) : false;
+            });
 
             if (!context.text || context.text === undefined) return false;
             const command: Command<T> | undefined = this.commands.find((command: Command<T>): boolean => createCommandRegExp(this.used_prefix, command.aliases).test(context.text!));
