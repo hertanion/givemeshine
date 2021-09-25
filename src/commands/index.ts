@@ -73,6 +73,7 @@ export class RiveHandler {
                 }) : false;
             });
 
+            if (!me) return;
             if (!context.text || context.text === undefined) return false;
             const command: Command<T> | undefined = this.commands.find((command: Command<T>): boolean => createCommandRegExp(this.used_prefix, command.aliases).test(context.text!));
             if (command === undefined) {
