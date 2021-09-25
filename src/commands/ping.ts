@@ -10,6 +10,6 @@ export default {
     desc: "пинг бота и стата",
     aliases: ["ping", "пинг"],
     handler(ctx: MessageContext, rctx: RiveContext) {
-        sendCopyWith(ctx,{ message: `${preshine}\n\nбилд шайни создан: ${formatDate(new Date(shine_build.createdAt)).full}\nпоследняя сборка: ${formatDate(new Date(shine_build.builded)).full}\nверсия: ${project.version}`, attachment: "doc261408301_591794406" });
+        ctx.reply({ message: `${preshine}\n\nбилд шайни создан: ${formatDate(new Date(shine_build.createdAt)).full}\nпоследняя сборка: ${formatDate(new Date(shine_build.builded)).full}\nверсия: ${project.version}`, attachment: "doc261408301_591794406" });
     }
 } as Command<MessageContext>;
