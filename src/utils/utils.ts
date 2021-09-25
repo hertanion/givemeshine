@@ -183,5 +183,6 @@ export const preshine = `${shine_emoji} шайни`;
 export const itsMe = (ctx: MessageContext, me: number) => ctx.isOutbox || ctx.peerId === me;
 export const log = (...all: any) => consola.log(chalk`{rgb(0, 170, 255) > [givemeshine]}`, ...all);
 export const random = (max: number, min: number = 0) => Math.floor(Math.random() * (max - min)) + min; 
+export const tonumber = (v: any) => Number.isNaN(Number(v)) ? undefined : Number(v).valueOf();
 
 // ================================================================================
