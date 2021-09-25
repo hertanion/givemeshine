@@ -11,4 +11,4 @@ export default {
         const available = ShineCommands.filter(e => e?.storage?.help !== undefined)
         ctx.reply(`${preshine} >> ${list_emoji} список команд\n\n${available.map(e => `${module_emoji} модуль >> ${e.name}\n${e.storage!.help}`).join("\n\n")}`)
     }
-} as Command<MessageContext>
+} as Command<MessageContext>;

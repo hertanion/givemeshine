@@ -36,7 +36,11 @@ class Voice extends Model {
             }
         });
         if (voice === null) return false;
-        await this.destroy();
+        await this.destroy({
+            where: {
+                name
+            }
+        });
         return true;
     };
 

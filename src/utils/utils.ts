@@ -2,11 +2,16 @@
 import { statSync } from 'fs';
 import { dirname } from 'path';
 import { API, AttachmentType, AttachmentTypeString, AudioAttachment, AudioMessageAttachment, DocumentAttachment, getRandomId, GiftAttachment, GraffitiAttachment, LinkAttachment, MarketAlbumAttachment, MarketAttachment, MessageContext, PhotoAttachment, PollAttachment, StickerAttachment, StoryAttachment, VideoAttachment, WallAttachment, WallReplyAttachment } from 'vk-io';
+import consola from 'consola';
 import { shine_emoji } from '@shine-emojis';
+import chalk from 'chalk';
+
+// ================================================================================
 
 export const __projname = dirname(__dirname);
 export const isAsync = (f: any) => f[Symbol.toStringTag] === 'AsyncFunction';
 
+// ================================================================================
 
 export class KotObjects {
     
@@ -74,6 +79,8 @@ export class KotObjects {
 
 };
 
+// ================================================================================
+
 export class ShineAttach {
     static async getAttachments(ctx: MessageContext, type: AttachmentType.AUDIO | 'audio'): Promise<AudioAttachment[]>;
     static async getAttachments(ctx: MessageContext, type: AttachmentType.AUDIO_MESSAGE | 'audio_message'): Promise<AudioMessageAttachment[]>;
@@ -95,7 +102,10 @@ export class ShineAttach {
         const attachments: any[] = [];
 
         async function seek(enter: MessageContext) {
-            await enter.loadMessagePayload({ force: true });
+            if (!enter.hasAttachments()) {
+                if (enter.id === undefined) return;
+                await enter.loadMessagePayload({ force: true });
+            };
             if(enter.hasAttachments(type as AttachmentTypeString)) attachments.push( ... enter.getAttachments( type ) );
             if(enter.hasReplyMessage) await seek(enter.replyMessage!);
             if(enter.hasForwards) for (let forward of enter.forwards) await seek(forward);
@@ -116,10 +126,10 @@ export async function sendCopyWith(ctx: MessageContext, options: any = {}, api?:
     if(api) return api.messages.send(message_options);
     ctx.send(message_options);
 };
+// ================================================================================
 
-const shine_build_raw = statSync(`${__projname}/build/shine.js`)
+// ================================================================================
 
-// interfaces
 export interface IFormatedDate {
     readonly sec: number;
     readonly ms: number;
@@ -160,9 +170,18 @@ export function formatDate(date: Date = new Date() ): IFormatedDate {
 
 };
 
+// ================================================================================
+
+// ================================================================================
+
+const shine_build_raw = statSync(`${__projname}/build/shine.js`)
 export const shine_build = {
     createdAt: shine_build_raw.birthtimeMs,
     builded: shine_build_raw.mtimeMs
 };
 export const preshine = `${shine_emoji} шайни`;
 export const itsMe = (ctx: MessageContext, me: number) => ctx.isOutbox || ctx.peerId === me;
+export const log = (...all: any) => consola.log(chalk`{rgb(0, 170, 255) > [givemeshine]}`, ...all);
+export const random = (max: number, min: number = 0) => Math.floor(Math.random() * (max - min)) + min; 
+
+// ================================================================================

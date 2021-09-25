@@ -1,27 +1,33 @@
 
-import { API, VK } from 'vk-io';
+import { SessionManager } from '@vk-io/session'
 import consola from 'consola';
+import boxen from 'boxen';
+import chalk from 'chalk';
 
 import Database from '@shine-database';
-import ShineSettings, { account } from '@shine-settings';
+import { account, settings } from '@shine-settings';
 import { ShineConnectCommands } from '@shine-commands';
-import { itsMe, __projname } from '@shine-utils';
+import { log, shine_build, __projname, formatDate } from '@shine-utils';
 
 async function main() {
 
-    await Database.init();
-    const currentUserId = await account.api.account.getProfileInfo({}).then( res => res.id );
+    console.log(boxen(`givemeshine\nvk userbot\nsource: https://github.com/whyrinki/givemeshine\nbuilded: ${formatDate(new Date(shine_build.builded)).full}`, { padding: 1 }));
 
-    account.updates.on('message_new', async function (ctx, next) {
-        if (!itsMe(ctx, currentUserId)) return;
-        await ctx.loadMessagePayload();
-        consola.info("шайни принял мое сообщение!!!!");
-        next();
-    });
-    account.updates.on('message_new', ShineConnectCommands(await ShineSettings.get('/bot/prefix'), await ShineSettings.get('/bot/prefix_as_name')).middleware);
+    const sessions = new SessionManager();
+    log(chalk`{rgb(77, 255, 77) [database]}`,"подключение и настройка бд...");
+    await Database.init();
+    log(chalk`{rgb(77, 255, 77) [database]}`,"готово!");
+    log(chalk`{rgb(0, 170, 255) [vk]}`,`входим на страницу ${settings.account.name}...`);
+    const AccountOwner = await account.api.account.getProfileInfo({});
+    log(chalk`{rgb(0, 170, 255) [vk]}`, chalk`{rgb(0, 170, 255) вошли под} ${AccountOwner.first_name} ${AccountOwner.last_name} {rgb(0, 170, 255) |} {rgb(0, 170, 255) VK ID:} ${AccountOwner.id} {rgb(0, 170, 255) |} {rgb(0, 170, 255) короткое имя:} ${AccountOwner.screen_name}`);
+
+    log(chalk`{rgb(255, 102, 153) [system]}`, 'подключаем сессии и команды...')
+    account.updates.on('message_new', sessions.middleware);
+    account.updates.on('message_new', ShineConnectCommands(settings.bot.prefix, settings.bot.prefix_as_name, AccountOwner.id).middleware);
+    log(chalk`{rgb(255, 102, 153) [system]}`, 'готово!')
 
     await account.updates.startPolling();
-    consola.ready("шайни успешно запущен");
+    log(chalk`{rgb(0, 170, 255) [vk]}`,"начал проверять обновления...");
 
 };
 main();

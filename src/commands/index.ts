@@ -1,15 +1,17 @@
 
+import { MessageContext } from 'vk-io';
+
 // block of handlers and etc
 
 // @types
 interface MessageRiveContext {
-    called: string | false;  
+    called: string | false;
+    isMe: boolean;  
 };
 interface onMessageCtx<T> {
     onMessage?: (ctx: T, mrctx: MessageRiveContext) => unknown;
 };
 type AnyProps = { [x: string]: any };
-type DefaultProps = { text?: string; hasText: boolean; } & AnyProps;
 export interface RiveContext {
     called: string;
     original: string;
@@ -39,6 +41,7 @@ export class RiveHandler {
     private used_prefix: string;
     private fallback: Function = function() {};
     private commands: any[] = [];
+    private allowedonly: number = 0;
 
     constructor(public prefix: string, named: boolean = false) {
         this.used_prefix = named === true ? RiveUseName(this.prefix) : this.prefix;
@@ -50,18 +53,24 @@ export class RiveHandler {
     public setFallback<T>(handler: Fallback<T>) {
         this.fallback = handler;
     };
+    public setAllowedOnly(ao: number) {
+        this.allowedonly = ao;
+    };
 
     public get middleware() {
-        return <T extends DefaultProps>(context: T, ...other: any[]) => {
+        return async <T extends MessageContext>(context: T) => {
             
             function createCommandRegExp(prefix: string = '', aliases: Array<string> = []): RegExp {
                 return new RegExp(`^${prefix}${aliases.length > 0 ? '(' + aliases.map(e => e.split(/\s+/).join('\\s+')).join('|') + ')' : ''}(?:\\s*|\\s+(.*))$`,'is');
             };
 
+            await context.loadMessagePayload();
+            const me = itsMe(context, this.allowedonly);
+
             this.commands.forEach(async(cmd: Command<T>) => {
                 cmd?.storage?.onMessage ? cmd?.storage?.onMessage(context, { 
-                    called: context.text !== undefined && createCommandRegExp(this.used_prefix, cmd.aliases).test(context.text) ? createCommandRegExp(this.used_prefix, cmd.aliases).exec(context.text)?.[1] || false : false
-                 }) : false;
+                    isMe: me, called: context.text !== undefined && createCommandRegExp(this.used_prefix, cmd.aliases).test(context.text) ? createCommandRegExp(this.used_prefix, cmd.aliases).exec(context.text)?.[1] || false : false
+                }) : false;
             });
 
             if (!context.text || context.text === undefined) return false;
@@ -96,8 +105,7 @@ import ShineCPing from './ping';
 import ShineCLullaby from './lullaby';
 import ShineCJpeg from './jpeg';
 import ShineCHelp from './help';
-import { MessageContext } from 'vk-io';
-import { preshine } from '@shine-utils';
+import { itsMe, preshine } from '@shine-utils';
 
 export const ShineCommands = [
     ShineCRandom,
@@ -114,9 +122,10 @@ export const ShineCommands = [
     ShineCFuck
 ];
 
-export function ShineConnectCommands(prefix: string, pusname: boolean): RiveHandler {
+export function ShineConnectCommands(prefix: string, pusname: boolean, allowedonly: number): RiveHandler {
     
     const commands = new RiveHandler(prefix, pusname);
+    commands.setAllowedOnly(allowedonly);
     commands.registerCommand(ShineCommands);
     commands.setFallback(async (ctx: MessageContext) => ctx.reply(`${preshine}\n\tкоманда не найдена!`));
     return commands;

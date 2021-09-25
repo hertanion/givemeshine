@@ -1,9 +1,8 @@
 import { __projname } from "@shine-utils";
 import { API, VK } from "vk-io";
-import Database from "./database";
-import sjson from '@shine-json';
+import jsonr from '@shine-json';
 
-export default new Database({
+const defaults_config = {
     path: `${__projname}/shine.settings.json`,
     default_config: {
         "bot": {
@@ -24,7 +23,8 @@ export default new Database({
         }
     },
     autoupdate: true
-});
+};
 
-export const account = new VK({ token: sjson.account.token.full_access });
-export const vk_me_api = new API({ token: sjson.account.token.vk_me });
+export const settings = Object.assign({}, jsonr, defaults_config);
+export const account = new VK({ token: settings.account.token.full_access });
+export const vk_me_api = new API({ token: settings.account.token.vk_me });
