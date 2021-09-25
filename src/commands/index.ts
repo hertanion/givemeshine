@@ -93,14 +93,8 @@ export class RiveHandler {
 
 // block of load commands
 
-import ShineCFuck from './fuck';
-import ShineCEval from './eval';
 import ShineCDemotivator from './demotivator';
-import ShineCChance from './chance';
-import ShineCWho from './who';
 import ShineCVoices from './voices';
-import ShineCStealPanties from './steal.panties';
-import ShineCRandom from './random';
 import ShineCPing from './ping';
 import ShineCLullaby from './lullaby';
 import ShineCJpeg from './jpeg';
@@ -108,18 +102,12 @@ import ShineCHelp from './help';
 import { itsMe, preshine } from '@shine-utils';
 
 export const ShineCommands = [
-    ShineCRandom,
-    ShineCEval,
     ShineCHelp,
     ShineCJpeg,
     ShineCLullaby,
     ShineCPing,
-    ShineCStealPanties,
     ShineCVoices,
-    ShineCWho,
-    ShineCChance,
     ShineCDemotivator,
-    ShineCFuck
 ];
 
 export function ShineConnectCommands(prefix: string, pusname: boolean, allowedonly: number): RiveHandler {
