@@ -68,8 +68,8 @@ export default {
             default:
                 
                 const voicesAll = await Voice.findAll();
-                const list = voicesAll.map((VoiceMod, i) => `${i+1} || ${VoiceMod.name} || Сохранено в base64`).join('\n');
-                ctx.reply({ message: `${preshine}\n${prevoice}\n${list.length > 0 ? list : `${not_passed_emoji} >> у вас пока нет войсов!`}` });
+                const list = voicesAll.map((VoiceMod, i) => [i+1, VoiceMod.name, 'base64'].join(' || '));
+                ctx.reply({ message: `${preshine}\n${prevoice}\n${list.length > 0 ? list.join('\n') : `${not_passed_emoji} у вас пока нет войсов!`}` });
                 break;
 
         }

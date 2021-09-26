@@ -3,7 +3,7 @@ import { MessageContext } from 'vk-io';
 import { Command } from './index';
 import canvas from 'canvas';
 import { preshine, ShineAttach, __projname } from '@shine-utils';
-import { not_passed_emoji } from '@shine-emojis';
+import { command_emoji, not_passed_emoji } from '@shine-emojis';
 import { account } from '@shine-settings';
 
 canvas.registerFont(`${__projname}/assets/fonts/tnr.ttf`, { family: 'Times New Roman' });
@@ -68,5 +68,8 @@ export default {
             message: "держи демотиватор",
             attachment: demattach
         });
+    },
+    storage: {
+        help: `${command_emoji} dem, дем - создать демотиватор`
     }
-} as Command<MessageContext>
+} as Command<MessageContext>;

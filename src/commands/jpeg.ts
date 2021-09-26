@@ -3,7 +3,7 @@ import { MessageContext } from 'vk-io';
 import { Command } from './index';
 import canvas from 'canvas';
 import { preshine, ShineAttach, tonumber } from '@shine-utils';
-import { not_passed_emoji } from '@shine-emojis';
+import { command_emoji, not_passed_emoji } from '@shine-emojis';
 import { account } from '@shine-settings';
 
 export default {
@@ -36,5 +36,8 @@ export default {
             message: `${preshine}\nдержи! jpeg_quality => ${jpeg_quality}`,
             attachment: jpeg_photo
         }); 
+    },
+    storage: {
+        help: `${command_emoji} jpeg, жпег (<качество от 0.00 до 1.00> - жпегает картинку)`
     }
 } as Command<MessageContext>;

@@ -1,4 +1,4 @@
-import { list_emoji, module_emoji } from '@shine-emojis';
+import { command_emoji, list_emoji, module_emoji } from '@shine-emojis';
 import { preshine } from '@shine-utils';
 import { MessageContext } from 'vk-io';
 import { Command, ShineCommands } from './index';
@@ -10,5 +10,8 @@ export default {
     handler(ctx, rctx) {
         const available = ShineCommands.filter(e => e?.storage?.help !== undefined)
         ctx.reply(`${preshine} >> ${list_emoji} список команд\n\n${available.map(e => `${module_emoji} модуль >> ${e.name}\n${e.storage!.help}`).join("\n\n")}`)
+    },
+    storage: {
+        help: `${command_emoji} help, помощь - справка по всем командам бота`
     }
 } as Command<MessageContext>;
