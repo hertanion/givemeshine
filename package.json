@@ -15,7 +15,6 @@
     "@types/node-fetch": "^2.5.12",
     "chalk": "^4.1.2",
     "boxen": "^5.1.2",
-    "cli-table3": "^0.6.0",
     "consola": "^2.15.3",
     "rollup": "^2.56.3",
     "rollup-plugin-typescript2": "^0.30.0",
