@@ -1,6 +1,8 @@
+
 import { __projname } from "@shine-utils";
 import { API, VK } from "vk-io";
 import jsonr from '@shine-json';
+import _ from "lodash";
 
 const defaults_config = {
     path: `${__projname}/shine.settings.json`,
@@ -25,6 +27,6 @@ const defaults_config = {
     autoupdate: true
 };
 
-export const settings = Object.assign({}, jsonr, defaults_config);
+export const settings = _.defaultsDeep(jsonr, defaults_config.default_config);
 export const account = new VK({ token: settings.account.token.full_access });
 export const vk_me_api = new API({ token: settings.account.token.vk_me });
