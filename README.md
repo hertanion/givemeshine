@@ -17,7 +17,7 @@ npm install -g rollup typescript
 ```
 ## Настройка
 ### Создайте в корне проекта файл `shine.settings.json` со следующим содержанием
-```json
+```jsonc
 // shine.settings.json
 {
     // Настройки для бота
