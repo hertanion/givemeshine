@@ -1,6 +1,5 @@
-# givemeshine
 
-Userbot для VK от [whyrinki](https://vk.com/whyrinki)
+<img src="./banner.png">
 
 ## Установка
 ### 1. Клонируйте репозиторий 
